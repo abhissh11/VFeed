@@ -7,6 +7,7 @@ import {
   getPostById,
   toggleLike,
   addComment,
+  deleteComment,
 } from "../controllers/postController.js";
 import { attachTagsToPost } from "../controllers/tagController.js";
 
@@ -23,5 +24,6 @@ router.get("/", getPosts);
 router.get("/:id", getPostById);
 router.put("/:id/like", authMiddleware, toggleLike);
 router.post("/:id/comment", authMiddleware, addComment);
+router.delete("/:id/comments/:commentId", authMiddleware, deleteComment);
 
 export default router;

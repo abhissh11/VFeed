@@ -104,3 +104,33 @@ export const addComment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// DELETE comment from post
+export const deleteComment = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const post = await Post.findById(id);
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const comment = post.comments.id(commentId);
+    if (!comment) return res.status(404).json({ message: "Comment not found" });
+
+    // Check permission: comment owner OR post owner
+    if (
+      comment.user.toString() !== req.userId &&
+      post.author.toString() !== req.userId
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this comment" });
+    }
+
+    comment.remove();
+    await post.save();
+
+    res.json({ message: "Comment deleted", comments: post.comments });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
