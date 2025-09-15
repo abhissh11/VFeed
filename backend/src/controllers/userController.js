@@ -91,3 +91,22 @@ export const getUserConnections = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Update logged-in user profile
+export const updateProfile = async (req, res) => {
+  try {
+    const updates = {};
+    if (req.body.bio) updates.bio = req.body.bio;
+    if (req.file) updates.avatar = req.file.path; // uploaded avatar
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      { $set: updates },
+      { new: true }
+    ).select("-password"); // don’t return password
+
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
