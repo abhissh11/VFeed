@@ -8,10 +8,17 @@ import {
   toggleLike,
   addComment,
 } from "../controllers/postController.js";
+import { attachTagsToPost } from "../controllers/tagController.js";
 
 const router = express.Router();
 
-router.post("/", authMiddleware, upload.single("image"), createPost);
+router.post(
+  "/",
+  authMiddleware,
+  upload.single("image"),
+  attachTagsToPost,
+  createPost
+);
 router.get("/", getPosts);
 router.get("/:id", getPostById);
 router.put("/:id/like", authMiddleware, toggleLike);

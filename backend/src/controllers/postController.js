@@ -1,4 +1,6 @@
 import Post from "../models/Post.js";
+import Notification from "../models/Notification.js";
+import { sendNotification } from "../socket/socket.js";
 
 // Create Post
 export const createPost = async (req, res) => {
@@ -57,6 +59,15 @@ export const toggleLike = async (req, res) => {
       post.likes.pull(req.userId);
     } else {
       post.likes.push(req.userId);
+
+      const notif = await Notification.create({
+        recipient: post.author,
+        sender: req.userId,
+        type: "like",
+        post: post._id,
+      });
+
+      sendNotification(post.author.toString(), notif);
     }
 
     await post.save();
@@ -77,6 +88,17 @@ export const addComment = async (req, res) => {
     post.comments.push(comment);
 
     await post.save();
+
+    // Create notification
+    const notif = await Notification.create({
+      recipient: post.author,
+      sender: req.userId,
+      type: "comment",
+      post: post._id,
+    });
+
+    sendNotification(post.author.toString(), notif);
+
     res.json(post.comments);
   } catch (err) {
     res.status(500).json({ error: err.message });

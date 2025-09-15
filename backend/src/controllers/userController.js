@@ -1,5 +1,7 @@
 import User from "../models/User.js";
 import Post from "../models/Post.js";
+import Notification from "../models/Notification.js";
+import { sendNotification } from "../socket/socket.js";
 
 // Follow / Unfollow User
 export const toggleFollow = async (req, res) => {
@@ -24,6 +26,15 @@ export const toggleFollow = async (req, res) => {
     } else {
       currentUser.following.push(targetUserId);
       targetUser.followers.push(currentUserId);
+
+      // Create notification
+      const notif = await Notification.create({
+        recipient: targetUserId,
+        sender: currentUserId,
+        type: "follow",
+      });
+
+      sendNotification(targetUserId.toString(), notif);
     }
 
     await currentUser.save();
