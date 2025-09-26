@@ -1,68 +1,74 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import API from "../../utils/axiosInstance";
-import { useAuth } from "../../contexts/AuthContext";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate, Link } from "react-router-dom";
+import { registerUser } from "../../api/auth";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Register() {
+  const [form, setForm] = useState({ username: "", email: "", password: "" });
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
-  const [error, setError] = useState("");
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await API.post("/auth/register", form);
-      login(res.data);
-      navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.error || "Register failed");
-    }
-  };
+  const mutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (data) => {
+      login(data.user);
+      navigate("/feed");
+    },
+    onError: (err) => {
+      alert(err.response?.data?.error || "Registration failed");
+    },
+  });
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded shadow-md w-80 space-y-4"
-      >
-        <h2 className="text-xl font-bold">Register</h2>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={form.password}
-          onChange={handleChange}
-          className="w-full p-2 border rounded"
-        />
-        <button
-          type="submit"
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+    <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="bg-white p-6 rounded-xl shadow-md w-96">
+        <h2 className="text-2xl font-bold mb-4">Register</h2>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            mutation.mutate(form);
+          }}
+          className="space-y-4"
         >
-          Register
-        </button>
-      </form>
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full p-2 border rounded"
+            value={form.username}
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-2 border rounded"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-2 border rounded"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+          <button
+            type="submit"
+            className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
+            disabled={mutation.isLoading}
+          >
+            {mutation.isLoading ? "Registering..." : "Register"}
+          </button>
+        </form>
+
+        {/* 👇 Add this */}
+        <p className="text-sm text-gray-600 mt-4 text-center">
+          Already have an account?{" "}
+          <Link to="/login" className="text-blue-500 hover:underline">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

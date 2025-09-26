@@ -1,3 +1,3 @@
 export default function Feed() {
-  return <div className="p-4">Feed Page (Following + Explore)</div>;
+  return <div className="p-14">Feed Page (Following + Explore)</div>;
 }

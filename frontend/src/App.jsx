@@ -1,54 +1,45 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// Pages
-import Login from "./pages/Auth/Login";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./pages/Auth/Register";
 import Feed from "./pages/Feed";
 import Profile from "./pages/Profile";
-import Search from "./pages/Search";
-import Tags from "./pages/Tags";
-import Notifications from "./pages/Notifications";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Auth/Login";
+import Header from "./components/Header";
+import HomePage from "./pages/HomePage";
 
-// Layout
-import Navbar from "./components/layout/Navbar";
-
-const queryClient = new QueryClient();
-
-function App() {
-  const isAuthenticated = !!localStorage.getItem("token"); // simple check (replace with AuthContext later)
-
+export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        {isAuthenticated && <Navbar />} {/* Navbar only when logged in */}
+    <>
+      <BrowserRouter>
+        <Header />
         <Routes>
-          {/* Auth */}
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/" element={<HomePage />} />
 
-          {/* Protected Routes */}
-          {isAuthenticated ? (
-            <>
-              <Route path="/" element={<Feed />} />
-              <Route path="/profile/:id" element={<Profile />} />
-              <Route path="/search" element={<Search />} />
-              <Route path="/tags/:tag" element={<Tags />} />
-              <Route path="/notifications" element={<Notifications />} />
-            </>
-          ) : (
-            // Redirect to login if not authenticated
-            <Route path="*" element={<Navigate to="/login" />} />
-          )}
+          {/* Protected routes */}
+          <Route
+            path="/feed"
+            element={
+              <ProtectedRoute>
+                <Feed />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/:id"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Fallback */}
+          <Route path="*" element={<Login />} />
         </Routes>
-      </Router>
-    </QueryClientProvider>
+      </BrowserRouter>
+    </>
   );
 }
-
-export default App;

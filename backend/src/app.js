@@ -1,7 +1,7 @@
 import express, { urlencoded } from "express";
-import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 
 import authRoutes from "./routes/authRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
@@ -15,7 +15,12 @@ dotenv.config();
 const app = express();
 
 //Middlewares
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend URL
+    credentials: true, // allow cookies / Authorization headers
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
