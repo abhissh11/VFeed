@@ -12,7 +12,7 @@ export default function Login() {
   const mutation = useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      login(data.user);
+      login(data);
       navigate("/feed");
     },
     onError: (err) => {

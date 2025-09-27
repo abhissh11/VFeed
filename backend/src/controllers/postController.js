@@ -156,3 +156,19 @@ export const deletePost = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Get Comments for a Post
+export const getPostComments = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate(
+      "comments.user",
+      "username avatar"
+    );
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    res.json(post.comments);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
