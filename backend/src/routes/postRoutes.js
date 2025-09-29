@@ -10,6 +10,8 @@ import {
   deleteComment,
   deletePost,
   getPostComments,
+  getPostsByHashtag,
+  getPostsByAuthor,
 } from "../controllers/postController.js";
 import { attachTagsToPost } from "../controllers/tagController.js";
 
@@ -29,5 +31,7 @@ router.post("/:id/comment", authMiddleware, addComment);
 router.get("/:id/comments", getPostComments);
 router.delete("/:id/comments/:commentId", authMiddleware, deleteComment);
 router.delete("/:id", authMiddleware, deletePost);
+router.get("/hashtag/:tag", getPostsByHashtag);
+router.get("/author/:authorId", getPostsByAuthor);
 
 export default router;

@@ -1,34 +1,16 @@
+// src/pages/CreatePostPage.jsx
 import React, { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost } from "../api/post";
-import { useNavigate } from "react-router-dom";
+import { useCreatePost } from "../hooks/useCreatePost";
 
 export default function CreatePostPage() {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
 
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  const { mutate, isPending } = useMutation({
-    mutationFn: createPost,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]); // refresh feed
-      navigate("/feed"); // redirect to feed after success
-    },
-    onError: (err) => {
-      alert(err.response?.data?.error || "Failed to create post");
-    },
-  });
+  const { submitPost, isPending } = useCreatePost({ redirect: true });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("content", content);
-    if (image) formData.append("image", image);
-
-    mutate(formData);
+    submitPost(content, image);
   };
 
   return (
@@ -37,7 +19,6 @@ export default function CreatePostPage() {
         <h2 className="text-2xl font-bold mb-4 text-center">Create Post</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          {/* Post Content */}
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -47,7 +28,6 @@ export default function CreatePostPage() {
             required
           />
 
-          {/* Image Upload */}
           <input
             type="file"
             accept="image/*"
@@ -55,7 +35,6 @@ export default function CreatePostPage() {
             className="block w-full text-sm text-gray-600"
           />
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={isPending}

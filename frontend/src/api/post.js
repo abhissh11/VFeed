@@ -38,3 +38,9 @@ export const createPost = async (formData) => {
   });
   return data;
 };
+
+// Get posts by hashtag
+export const fetchPostsByHashtag = async (tag) => {
+  const { data } = await API.get(`/posts/hashtag/${tag}`);
+  return data;
+};

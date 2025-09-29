@@ -172,3 +172,33 @@ export const getPostComments = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Get posts by hashtag
+export const getPostsByHashtag = async (req, res) => {
+  try {
+    const { tag } = req.params;
+
+    const posts = await Post.find({ hashtags: tag })
+      .populate("author", "username avatar")
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get posts by a specific author
+export const getPostsByAuthor = async (req, res) => {
+  try {
+    const { authorId } = req.params;
+
+    const posts = await Post.find({ author: authorId })
+      .populate("author", "username avatar")
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

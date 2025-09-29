@@ -9,6 +9,7 @@ import HomePage from "./pages/HomePage";
 import NotificationsPage from "./pages/Notifications";
 import PostDetailPage from "./pages/PostDetailPage";
 import CreatePostPage from "./pages/CreatePostPage";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/posts/:id" element={<PostDetailPage />} />
           <Route path="/create" element={<CreatePostPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
           {/* Protected routes */}
           <Route
