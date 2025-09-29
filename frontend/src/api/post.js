@@ -21,6 +21,20 @@ export const addComment = async ({ postId, text }) => {
 };
 
 export const toggleLike = async (postId) => {
-  const { data } = await API.put(`/posts/${postId}/like`);
+  const { data } = await PrivateAPI.put(`/posts/${postId}/like`);
+  return data;
+};
+
+export const fetchPostById = async (postId) => {
+  const { data } = await API.get(`/posts/${postId}`);
+  return data;
+};
+
+export const createPost = async (formData) => {
+  const { data } = await PrivateAPI.post("/posts", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return data;
 };

@@ -1,13 +1,14 @@
 import { Server } from "socket.io";
 
 let io;
-const onlineUsers = new Map(); // userId -> socketId
+const onlineUsers = new Map();
 
 export const initSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: "*",
+      origin: "http://localhost:5173", // 👈 allow frontend
       methods: ["GET", "POST"],
+      credentials: true, // 👈 important
     },
   });
 
@@ -30,7 +31,6 @@ export const initSocket = (server) => {
   });
 };
 
-// Utility to send notification
 export const sendNotification = (recipientId, notification) => {
   const socketId = onlineUsers.get(recipientId);
   if (socketId) {

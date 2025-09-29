@@ -6,6 +6,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Auth/Login";
 import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
+import NotificationsPage from "./pages/Notifications";
+import PostDetailPage from "./pages/PostDetailPage";
+import CreatePostPage from "./pages/CreatePostPage";
 
 export default function App() {
   return (
@@ -14,9 +17,12 @@ export default function App() {
         <Header />
         <Routes>
           {/* Public routes */}
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<HomePage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
+          <Route path="/posts/:id" element={<PostDetailPage />} />
+          <Route path="/create" element={<CreatePostPage />} />
 
           {/* Protected routes */}
           <Route

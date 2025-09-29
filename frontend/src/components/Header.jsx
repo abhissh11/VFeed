@@ -1,9 +1,11 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useNotifications } from "../context/NotificationContext"; // ✅ import
 
 export default function Header() {
   const { user, logout } = useAuth();
+  const { notifications } = useNotifications(); // ✅ live notifications
   const navigate = useNavigate();
 
   const handleLogOut = () => {
@@ -22,13 +24,28 @@ export default function Header() {
 
       {/* Nav Links */}
       <div className="flex gap-8 items-center">
-        <ul className="flex gap-4">
+        <ul className="flex gap-6 items-center">
           <Link to="/" className="text-sm font-normal text-gray-800">
             Home
           </Link>
           <Link to="/feed" className="text-sm font-normal text-gray-800">
             Feed
           </Link>
+
+          {/* Notifications */}
+          {user && (
+            <Link
+              to="/notifications"
+              className="relative text-sm font-normal text-gray-800"
+            >
+              Notifications
+              {notifications.length > 0 && (
+                <span className="absolute -top-2 -right-4 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  {notifications.length}
+                </span>
+              )}
+            </Link>
+          )}
         </ul>
 
         {/* Right Button */}

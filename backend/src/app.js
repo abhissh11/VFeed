@@ -2,6 +2,7 @@ import express, { urlencoded } from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
 
 import authRoutes from "./routes/authRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
@@ -23,6 +24,8 @@ app.use(
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/uploads", express.static(path.join(process.cwd(), "src", "uploads")));
 
 //Routes
 app.use("/api/auth", authRoutes);

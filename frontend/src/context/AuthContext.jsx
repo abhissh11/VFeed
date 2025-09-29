@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import socket from "../utils/socket";
 
 const AuthContext = createContext();
 
@@ -18,6 +19,7 @@ export const AuthProvider = ({ children }) => {
     setUser(data.user);
     localStorage.setItem("user", JSON.stringify(data.user));
     localStorage.setItem("token", data.token);
+    socket.emit("register", userData.user._id);
   };
 
   const logout = () => {
@@ -25,6 +27,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
+
+  useEffect(() => {
+    if (user?._id) {
+      socket.emit("register", user._id);
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
