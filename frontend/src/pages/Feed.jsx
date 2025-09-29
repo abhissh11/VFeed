@@ -24,7 +24,9 @@ export default function Feed() {
   return (
     <div className="grid grid-cols-12 gap-4 h-screen px-6 py-4 pt-20">
       {/* Left Sidebar */}
-      <Sidebar onSelectTag={setSelectedTag} />
+      <div className="col-span-2">
+        <Sidebar onSelectTag={setSelectedTag} />
+      </div>
 
       {/* Center Feed */}
       <main className="col-span-6 flex flex-col gap-4 overflow-y-auto no-scrollbar">
@@ -36,7 +38,9 @@ export default function Feed() {
       </main>
 
       {/* Right Sidebar */}
-      <SearchSidebar />
+      <div className="col-span-4">
+        <SearchSidebar />
+      </div>
     </div>
   );
 }
